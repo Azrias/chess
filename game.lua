@@ -495,8 +495,8 @@ local function onObjectTouch( event )
             changePiecePositionIfValid(event,pieceStartPositionX,pieceStartPositionY)
             if needToAddEventListener then
                 needToAddEventListener = false
-                local startPositionCoordinateX = math.floor(event.target.x/35) + 1
-                local startPositionCoordinateY = math.floor(event.target.y/35) + 1
+                local startPositionCoordinateX = math.floor(event.target.x/DISTANCE_BETWEEN_SQUARES) + 1
+                local startPositionCoordinateY = math.floor(event.target.y/DISTANCE_BETWEEN_SQUARES) + 1
                 field[startPositionCoordinateX][startPositionCoordinateY]["object"]:addEventListener( "touch", onObjectTouch ) 
             end
             isKingHasCheck("white")
