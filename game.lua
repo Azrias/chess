@@ -21,7 +21,7 @@ local nameOfTheFilePawnBlack = "whitePawn.png"
 local nameOfTheFileRockBlack = "whiteRock.png"
 local nameOfTheFileBishopBlack = "whiteBishop.png"
 local nameOfTheFileQueenBlack = "whiteQueen.png"
-local nameOfTheFileKingBlack = "whiteking.png"
+local nameOfTheFileKingBlack = "whiteKing.png"
 local nameOfTheFileKnightBlack = "whiteKnight.png"
 
 local DISTANCE_BETWEEN_SQUARES = 35
