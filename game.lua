@@ -135,16 +135,16 @@ local function resetArrayOfPosibleMovements()
     end
 end
 
-local function arrayOfPosibleMovesBishop(xStart,yStart)
+local function arrayOfPosibleMovesBishop(table,xStart,yStart)
     local x
     local y
     x = xStart - 1
     y = yStart - 1
     while ( x > 0 and y > 0)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -154,10 +154,10 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
     x = xStart - 1 
     y = yStart + 1
     while ( x > 0 and y <= N)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -167,10 +167,10 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
     x = xStart + 1 
     y = yStart - 1
     while ( y > 0 and x <= N)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -180,10 +180,10 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
     x = xStart + 1 
     y = yStart + 1
     while ( x <= N and y <= N)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -193,16 +193,16 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
     highlightPossibleFigureMovements(xStart,yStart)
 end
 
-local function arrayOfPosibleMovesRock(xStart,yStart)
+local function arrayOfPosibleMovesRock(table,xStart,yStart)
     local x
     local y 
     x = xStart - 1
     y = yStart
     while ( x > 0 ) do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -211,10 +211,10 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     x = xStart + 1
     y = yStart
     while (x <= N)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -223,10 +223,10 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     x = xStart 
     y = yStart - 1
     while (y > 0)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -235,10 +235,10 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     x = xStart 
     y = yStart + 1
     while (y <= N)do
-        tableOfPosibleMovements[x][y] = 1
+        table[x][y] = 1
         if isPieceOnSquare(x,y) then
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[x][y] = 0
+                table[x][y] = 0
             end
             break
         end
@@ -247,14 +247,14 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     highlightPossibleFigureMovements(xStart,yStart)
 end
 
-local function arrayOfPosibleMovesKing(xStart,yStart)
+local function arrayOfPosibleMovesKing(table,xStart,yStart)
     for i = 1, N do
         for j = 1, N do
             if math.abs(i - xStart) <= 1 and  math.abs(j - yStart) <= 1 then
-                tableOfPosibleMovements[i][j] = 1
+                table[i][j] = 1
                 if isPieceOnSquare(i,j) then
                     if field[i][j]["color"] == field[xStart][yStart]["color"] then
-                        tableOfPosibleMovements[i][j] = 0
+                        table[i][j] = 0
                     end
                 end
             end
@@ -263,94 +263,94 @@ local function arrayOfPosibleMovesKing(xStart,yStart)
     highlightPossibleFigureMovements(xStart,yStart)
 end
 
-local function arrayOfPosibleMovesKnight(xStart,yStart)
+local function arrayOfPosibleMovesKnight(table,xStart,yStart)
     for i = 1, N do
         for j = 1, N do
             if math.abs(i - xStart) == 1 and  math.abs(j - yStart) == 2 then
-                tableOfPosibleMovements[i][j] = 1
+                table[i][j] = 1
             end
             if math.abs(i - xStart) == 2 and  math.abs(j - yStart) == 1 then
-                tableOfPosibleMovements[i][j] = 1
+                table[i][j] = 1
             end
         end
     end
     for i = 1, N do
         for j = 1, N do
             if isPieceOnSquare(i,j) and field[i][j]["color"] == field[xStart][yStart]["color"] then
-                tableOfPosibleMovements[i][j] = 0
+                table[i][j] = 0
             end
         end
     end
     highlightPossibleFigureMovements(xStart,yStart)
 end
 
-local function arrayOfPosibleMovesPawn(xStart,yStart)
+local function arrayOfPosibleMovesPawn(table,xStart,yStart)
     if yStart == 7 and field[xStart][yStart]["color"] == "black" then
         if not isPieceOnSquare(xStart, yStart - 1)  and not isPieceOnSquare(xStart, yStart - 2) then
-            tableOfPosibleMovements[xStart][yStart - 2] = 1
+            table[xStart][yStart - 2] = 1
         end
     end
 
     if yStart == 2 and field[xStart][yStart]["color"] == "white" then
         if not isPieceOnSquare(xStart, yStart + 1)  and not isPieceOnSquare(xStart, yStart + 2) then
-            tableOfPosibleMovements[xStart][yStart + 2] = 1
+            table[xStart][yStart + 2] = 1
         end
     end
     
     if field[xStart][yStart]["color"]  == "white" then
         if xStart ~= 1 then
             if isPieceOnSquare(xStart - 1, yStart + 1)  then
-                tableOfPosibleMovements[xStart - 1][yStart + 1] = 1
+                table[xStart - 1][yStart + 1] = 1
             end
         end
         if not isPieceOnSquare(xStart, yStart + 1) then
-            tableOfPosibleMovements[xStart][yStart + 1] = 1
+            table[xStart][yStart + 1] = 1
         end
         if xStart ~= 8 then
             if isPieceOnSquare(xStart + 1, yStart + 1)  then
-                tableOfPosibleMovements[xStart + 1][yStart + 1] = 1
+                table[xStart + 1][yStart + 1] = 1
             end
         end
     else
         if xStart ~= 1 then
             if isPieceOnSquare(xStart - 1, yStart - 1)  then
-                tableOfPosibleMovements[xStart - 1][yStart - 1] = 1
+                table[xStart - 1][yStart - 1] = 1
             end
         end
         if not isPieceOnSquare(xStart, yStart - 1) then
-            tableOfPosibleMovements[xStart][yStart - 1] = 1
+            table[xStart][yStart - 1] = 1
         end
         if xStart ~= 8 then
             if isPieceOnSquare(xStart + 1, yStart - 1)  then
-                tableOfPosibleMovements[xStart + 1][yStart - 1] = 1
+                table[xStart + 1][yStart - 1] = 1
             end
         end
     end
     highlightPossibleFigureMovements(xStart,yStart)
 end
 
-local function fillArrayOfPosibleMoves(string,x,y)
+local function fillArrayOfPosibleMoves(table,string,x,y)
     if field[x][y]["color"] == currentTurnColor then
         return 
     end 
     if string == "biship" then
-        arrayOfPosibleMovesBishop(x,y)
+        arrayOfPosibleMovesBishop(table,x,y)
     end
     if string == "rock" then
-        arrayOfPosibleMovesRock(x,y)
+        arrayOfPosibleMovesRock(table,x,y)
     end
     if string == "queen" then
-        arrayOfPosibleMovesBishop(x,y)
-        arrayOfPosibleMovesRock(x,y)
+        arrayOfPosibleMovesBishop(table,x,y)
+        arrayOfPosibleMovesRock(table,x,y)
     end
     if string == "king" then
-        arrayOfPosibleMovesKing(x,y)
+        arrayOfPosibleMovesKing(table,x,y)
     end
     if string == "knight" then
-        arrayOfPosibleMovesKnight(x,y)
+        arrayOfPosibleMovesKnight(table,x,y)
     end
     if string == "pawn" then
-        arrayOfPosibleMovesPawn(x,y)
+        arrayOfPosibleMovesPawn(table,x,y)
     end
 end
 
@@ -443,7 +443,7 @@ local function onObjectTouch( event )
         pieceStartPositionY = event.target.y  
         local startPositionCoordinateX = math.floor(pieceStartPositionX/35) + 1
         local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
-        fillArrayOfPosibleMoves(field[startPositionCoordinateX][startPositionCoordinateY]["piece"], startPositionCoordinateX,startPositionCoordinateY)
+        fillArrayOfPosibleMoves(tableOfPosibleMovements,field[startPositionCoordinateX][startPositionCoordinateY]["piece"], startPositionCoordinateX,startPositionCoordinateY)
 
     elseif ( event.target.isFocus ) then
         if ( event.phase == "moved" ) then
