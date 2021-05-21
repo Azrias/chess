@@ -8,9 +8,6 @@ local N = 8
 local field = {}
 local fieldGroup
 
-local whiteKingInCheck = false
-local blackKingInCheck = false
-
 local currentTurnColor = "white"
 
 local nameOfTheFilePawnWhite = "blackPawn.png"
@@ -55,6 +52,7 @@ local function createField()
         end
     end
 end
+
 local function changeColorOfSquare()
     -- body
     for i=1,N do
@@ -671,6 +669,9 @@ local function createPieces()
     
 end
 
+
+
+ 
 
 
 
