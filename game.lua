@@ -8,6 +8,9 @@ local N = 8
 local field = {}
 local fieldGroup
 
+local whiteKingInCheck = false
+local blackKingInCheck = false
+
 local currentTurnColor = "white"
 
 local nameOfTheFilePawnWhite = "blackPawn.png"
@@ -52,7 +55,6 @@ local function createField()
         end
     end
 end
-
 local function changeColorOfSquare()
     -- body
     for i=1,N do
@@ -191,7 +193,6 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
         x = x + 1 
         y = y + 1
     end
-    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesRock(xStart,yStart)
@@ -248,7 +249,6 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
         end
         y = y + 1
     end
-    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesKing(xStart,yStart)
@@ -264,7 +264,6 @@ local function arrayOfPosibleMovesKing(xStart,yStart)
             end
         end
     end
-    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesKnight(xStart,yStart)
@@ -285,7 +284,6 @@ local function arrayOfPosibleMovesKnight(xStart,yStart)
             end
         end
     end
-    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesPawn(xStart,yStart)
@@ -330,7 +328,6 @@ local function arrayOfPosibleMovesPawn(xStart,yStart)
             end
         end
     end
-    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function fillArrayOfPosibleMoves(string,x,y)
@@ -360,6 +357,7 @@ local function fillArrayOfPosibleMoves(string,x,y)
     if string == "pawn" then
         arrayOfPosibleMovesPawn(x,y)
     end
+    highlightPossibleFigureMovements(x,y)
 end
 
 
@@ -673,9 +671,6 @@ local function createPieces()
     
 end
 
-
-
- 
 
 
 
