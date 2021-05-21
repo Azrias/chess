@@ -342,6 +342,9 @@ local function arrayOfPosibleMovesPawn(table,xStart,yStart)
     
 end
 
+local function deleteIlligalSquares(table)
+    
+end
 
 local function fillArrayOfPosibleMoves(table,string,x,y)
     if field[x][y]["color"] == currentTurnColor and  not ONE_PLAYER then
@@ -366,7 +369,6 @@ local function fillArrayOfPosibleMoves(table,string,x,y)
     if string == "pawn" then
         arrayOfPosibleMovesPawn(table,x,y)
     end
-    
     highlightPossibleFigureMovements(x,y)
 end
 
@@ -420,6 +422,8 @@ end
 
 local function isKingHasCheck(color)
     allPosiblemovesForColor(color)
+    whiteKingHascheck = false
+    blackKingHascheck = false
     for i = 1, N do
         for j = 1, N do
             if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" then
@@ -432,6 +436,19 @@ local function isKingHasCheck(color)
         end
     end
     resetTableOfAllPosibleMovementsForColor()
+end
+
+local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd)
+    
+    field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
+    field[xStart][yStart]["piece"] = "null"
+    field[xEnd][yEnd]["color"] = field[xStart][yStart]["color"]
+    field[xStart][yStart]["color"] = "null"
+    print("done")
+    field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
+    field[xStart][yStart]["piece"] = "null"
+    field[xEnd][yEnd]["color"] = field[xStart][yStart]["color"]
+    field[xStart][yStart]["color"] = "null"
 end
 
 local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY)
@@ -475,6 +492,7 @@ local function changePiecePositionIfValid(event,pieceStartPositionX,pieceStartPo
     end
 end
 
+
 local  pieceStartPositionX, pieceStartPositionY
 local function onObjectTouch( event )
     if ( event.phase == "began" ) then
@@ -499,10 +517,15 @@ local function onObjectTouch( event )
                 local startPositionCoordinateY = math.floor(event.target.y/DISTANCE_BETWEEN_SQUARES) + 1
                 field[startPositionCoordinateX][startPositionCoordinateY]["object"]:addEventListener( "touch", onObjectTouch ) 
             end
+            resetArrayOfPosibleMovements()
             isKingHasCheck("white")
             isKingHasCheck("black")
-            print (whiteKingHascheck)
-            print (blackKingHascheck)
+            if whiteKingHascheck == true then
+                print "check"
+            end
+            if blackKingHascheck == true then   
+                print "check"
+            end
             changeColorOfSquare()
             resetArrayOfPosibleMovements()
         end
