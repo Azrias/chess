@@ -113,7 +113,6 @@ local function capturePiece(x,y)
     field[x][y]["piece"] = "null"
     field[x][y]["object"] = "null"
     field[x][y]["color"] = "null"
-    print("piece captured")
 end
 
 local function highlightPossibleFigureMovements(xCenter,yCenter)
@@ -191,6 +190,7 @@ local function arrayOfPosibleMovesBishop(xStart,yStart)
         x = x + 1 
         y = y + 1
     end
+    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesRock(xStart,yStart)
@@ -198,7 +198,6 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     local y 
     x = xStart - 1
     y = yStart
-    print(x .. " " .. y)
     while ( x > 0 ) do
         tableOfPosibleMovements[x][y] = 1
         if isPieceOnSquare(x,y) then
@@ -214,8 +213,6 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
     while (x <= N)do
         tableOfPosibleMovements[x][y] = 1
         if isPieceOnSquare(x,y) then
-            print (field[x][y]["color"])
-            print (field[xStart][yStart]["color"])
             if field[x][y]["color"] == field[xStart][yStart]["color"] then
                 tableOfPosibleMovements[x][y] = 0
             end
@@ -247,6 +244,7 @@ local function arrayOfPosibleMovesRock(xStart,yStart)
         end
         y = y + 1
     end
+    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesKing(xStart,yStart)
@@ -262,6 +260,7 @@ local function arrayOfPosibleMovesKing(xStart,yStart)
             end
         end
     end
+    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesKnight(xStart,yStart)
@@ -282,6 +281,7 @@ local function arrayOfPosibleMovesKnight(xStart,yStart)
             end
         end
     end
+    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function arrayOfPosibleMovesPawn(xStart,yStart)
@@ -326,21 +326,18 @@ local function arrayOfPosibleMovesPawn(xStart,yStart)
             end
         end
     end
+    highlightPossibleFigureMovements(xStart,yStart)
 end
 
 local function fillArrayOfPosibleMoves(string,x,y)
-    print("nothing")
-    print(string)
     if field[x][y]["color"] == currentTurnColor then
         return 
     end 
     if string == "biship" then
         arrayOfPosibleMovesBishop(x,y)
-        print("bishop")
     end
     if string == "rock" then
         arrayOfPosibleMovesRock(x,y)
-        print "rock"
     end
     if string == "queen" then
         arrayOfPosibleMovesBishop(x,y)
@@ -355,7 +352,6 @@ local function fillArrayOfPosibleMoves(string,x,y)
     if string == "pawn" then
         arrayOfPosibleMovesPawn(x,y)
     end
-    highlightPossibleFigureMovements(x,y)
 end
 
 
@@ -385,12 +381,9 @@ local function promotePawn(x,y)
     fieldGroup:insert( piece )
     field[x][y]["object"] = piece   
     field[x][y]["piece"] = "queen"
-    print "Promote!!"
 end
 
 local function isNeedToPromote(string,y)
-    print (string)
-    print (y)
     if string == "pawn" then
         if y == 8 or y == 1 then
             return true
@@ -429,7 +422,6 @@ local function changePiecePositionIfValid(event,pieceStartPositionX,pieceStartPo
     local startPositionCoordinateX = math.floor(pieceStartPositionX/35) + 1
     local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
     if isValidMovement(xOfUnderneathSquare,yOfUnderneathSquare) then
-        print("changePiecePosition callled")
         if isPieceOnSquare(xOfUnderneathSquare,yOfUnderneathSquare) then
             capturePiece(xOfUnderneathSquare,yOfUnderneathSquare)
         end
@@ -451,7 +443,6 @@ local function onObjectTouch( event )
         pieceStartPositionY = event.target.y  
         local startPositionCoordinateX = math.floor(pieceStartPositionX/35) + 1
         local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
-        print(startPositionCoordinateX .. " " .. startPositionCoordinateY)
         fillArrayOfPosibleMoves(field[startPositionCoordinateX][startPositionCoordinateY]["piece"], startPositionCoordinateX,startPositionCoordinateY)
 
     elseif ( event.target.isFocus ) then
