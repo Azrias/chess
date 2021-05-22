@@ -452,6 +452,13 @@ end
 
 local function isKingHasCheckForAnalys(color)
     allPosiblemovesForColor(tableForallPosibleMovesForAnalys,color)
+    for i = 1, N do
+        for j = 1, N do
+            if tableForallPosibleMovesForAnalys[i][j] == 1 then
+                --print(i .. " " .. j)
+            end
+        end
+    end
     if color == "white" then
         whiteKingHascheckForAnalys = "false"
     else
@@ -460,14 +467,18 @@ local function isKingHasCheckForAnalys(color)
     for i = 1, N do
         for j = 1, N do
             if tableForallPosibleMovesForAnalys[i][j] == 1 and field[i][j]["piece"] == "king" then
+                print(i .. " " .. j .. "white can go here and here is a king")
                 if color == "white" then
                     whiteKingHascheckForAnalys = "true"
+                    --print "sq"
                 else
                     blackKingHascheckForAnalys = "true"
+                    --print "black has a check"
                 end
             end
         end
     end
+    print(blackKingHascheckForAnalys)
     resettableForallPosibleMovesForAnalys()
 end
 
@@ -505,16 +516,10 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     field[xStart][yStart]["object"] = "null"
     print(xEnd .. " " .. yEnd)
 
-    isKingHasCheckForAnalys("white")
+    --isKingHasCheckForAnalys("white")
     isKingHasCheckForAnalys("black")
 
-    --if whiteKingHascheckForAnalys then
-    --    print("hascheck if go to" .. xEnd .. yEnd)
-    --else
-    --    print("doesnot have one")
-    --end
-
-    if blackKingHascheckForAnalys then
+    if blackKingHascheckForAnalys == "true" then
         print("has check if go to" .. xEnd .. yEnd)
     else
         print("doesnot have one")
