@@ -12,8 +12,8 @@ local ONE_PLAYER = true;
 
 local currentTurnColor = "white"
 
-local whiteKingHascheck = false
-local blackKingHascheck = false
+local whiteKingHascheck
+local blackKingHascheck
 
 local nameOfTheFilePawnWhite = "blackPawn.png"
 local nameOfTheFileRockWhite = "blackRock.png"
@@ -422,15 +422,18 @@ end
 
 local function isKingHasCheck(color)
     allPosiblemovesForColor(color)
-    whiteKingHascheck = false
-    blackKingHascheck = false
+    if color == "white" then
+        whiteKingHascheck = "false"
+    else
+        blackKingHascheck = "false"
+    end
     for i = 1, N do
         for j = 1, N do
             if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" then
                 if color == "white" then
-                    whiteKingHascheck = true
+                    whiteKingHascheck = "true"
                 else
-                    blackKingHascheck = true
+                    blackKingHascheck = "true"
                 end
             end
         end
@@ -451,7 +454,7 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd)
     field[xStart][yStart]["color"] = "null"
 end
 
-local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY)
+local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY,an)
     event.target.x = DISTANCE_BETWEEN_SQUARES * xOfUnderneathSquare - DISTANCE_BETWEEN_SQUARES/2
     event.target.y = DISTANCE_BETWEEN_SQUARES * yOfUnderneathSquare - DISTANCE_BETWEEN_SQUARES/2 
     field[xOfUnderneathSquare][yOfUnderneathSquare]["piece"] = field[pieceStartCoordinateX][pieceStartCoordinateY]["piece"]
@@ -502,6 +505,17 @@ local function onObjectTouch( event )
         pieceStartPositionY = event.target.y  
         local startPositionCoordinateX = math.floor(pieceStartPositionX/35) + 1
         local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
+        isKingHasCheck("white")
+        isKingHasCheck("black")
+        if whiteKingHascheck == "true" then
+            print "check"
+        end
+        if blackKingHascheck == "true" then   
+            print "check"
+        end
+        if blackKingHascheck == "true" then
+           changePiecePositionForCheck(2,2,2,4)
+        end
         fillArrayOfPosibleMoves(tableOfPosibleMovements,field[startPositionCoordinateX][startPositionCoordinateY]["piece"], startPositionCoordinateX,startPositionCoordinateY)
     elseif ( event.target.isFocus ) then
         if ( event.phase == "moved" ) then
@@ -510,6 +524,7 @@ local function onObjectTouch( event )
         elseif ( event.phase == "ended" or event.phase == "cancelled" ) then
             display.getCurrentStage():setFocus( nil )
             event.target.isFocus = false
+            
             changePiecePositionIfValid(event,pieceStartPositionX,pieceStartPositionY)
             if needToAddEventListener then
                 needToAddEventListener = false
@@ -518,14 +533,6 @@ local function onObjectTouch( event )
                 field[startPositionCoordinateX][startPositionCoordinateY]["object"]:addEventListener( "touch", onObjectTouch ) 
             end
             resetArrayOfPosibleMovements()
-            isKingHasCheck("white")
-            isKingHasCheck("black")
-            if whiteKingHascheck == true then
-                print "check"
-            end
-            if blackKingHascheck == true then   
-                print "check"
-            end
             changeColorOfSquare()
             resetArrayOfPosibleMovements()
         end
