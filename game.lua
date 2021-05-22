@@ -323,7 +323,7 @@ local function arrayOfPosibleMovesPawn(table,xStart,yStart)
     
     if field[xStart][yStart]["color"]  == "white" then
         if xStart ~= 1 then
-            if isPieceOnSquare(xStart - 1, yStart + 1)  then
+            if isPieceOnSquare(xStart - 1, yStart + 1) and field[xStart - 1][yStart + 1]["color"] ~= field[xStart][yStart]["color"] then
                 table[xStart - 1][yStart + 1] = 1
             end
         end
@@ -331,13 +331,13 @@ local function arrayOfPosibleMovesPawn(table,xStart,yStart)
             table[xStart][yStart + 1] = 1
         end
         if xStart ~= 8 then
-            if isPieceOnSquare(xStart + 1, yStart + 1)  then
+            if isPieceOnSquare(xStart + 1, yStart + 1) and field[xStart + 1][yStart + 1]["color"] ~= field[xStart][yStart]["color"]  then
                 table[xStart + 1][yStart + 1] = 1
             end
         end
     else
         if xStart ~= 1 then
-            if isPieceOnSquare(xStart - 1, yStart - 1)  then
+            if isPieceOnSquare(xStart - 1, yStart - 1) and field[xStart - 1][yStart - 1]["color"] ~= field[xStart][yStart]["color"]  then
                 table[xStart - 1][yStart - 1] = 1
             end
         end
@@ -345,7 +345,7 @@ local function arrayOfPosibleMovesPawn(table,xStart,yStart)
             table[xStart][yStart - 1] = 1
         end
         if xStart ~= 8 then
-            if isPieceOnSquare(xStart + 1, yStart - 1)  then
+            if isPieceOnSquare(xStart + 1, yStart - 1) and field[xStart + 1][yStart - 1]["color"] ~= field[xStart][yStart]["color"]  then
                 table[xStart + 1][yStart - 1] = 1
             end
         end
