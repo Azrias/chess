@@ -469,7 +469,7 @@ local function isKingHasCheck(color)
     end
     for i = 1, N do
         for j = 1, N do
-            if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" then
+            if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" and field[i][j]["color"] == color then
                 if color == "white" then
                     whiteKingHascheck = "true"
                 else
@@ -504,7 +504,7 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     --end
 
     if blackKingHascheckForAnalys then
-        print("hascheck if go to" .. xEnd .. yEnd)
+        print("has check if go to" .. xEnd .. yEnd)
     else
         print("doesnot have one")
     end
@@ -584,11 +584,11 @@ local function onObjectTouch( event )
         
         if whiteKingHascheck == "true" then
             excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"white")
-            print ("white has check")
+            print ("whiteking has check")
         end
         if blackKingHascheck == "true" then   
             excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"black")
-            print ("black has check")
+            print ("blackking has check")
         end 
         highlightPossibleFigureMovements(startPositionCoordinateX,startPositionCoordinateY)
     elseif ( event.target.isFocus ) then
