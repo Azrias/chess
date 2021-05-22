@@ -8,7 +8,7 @@ local N = 8
 local field = {}
 local fieldGroup
 
-local ONE_PLAYER = true;
+local ONE_PLAYER = true
 
 local currentTurnColor = "white"
 
@@ -41,12 +41,14 @@ local FIELD_OFFSET_Y = 50
 --- Creating an array of square but do not draw them @see "drawTheSquares"
 local tableOfPosibleMovements = {}
 local tableOfAllPosibleMovementsForColor = {}
+local tableForAnalys = {}
 local function createField()
     -- body
     for i=1,N do
         field[i] = {}
         tableOfPosibleMovements[i] = {}
         tableOfAllPosibleMovementsForColor[i] = {}
+        tableForAnalys[i] = {}   
         for j=1,N do
             local square = {}
             square["x"] = i * DISTANCE_BETWEEN_SQUARES - DISTANCE_BETWEEN_SQUARES/2
@@ -57,6 +59,7 @@ local function createField()
             field[i][j]["object"] = "null"
             tableOfPosibleMovements[i][j] = 0
             tableOfAllPosibleMovementsForColor[i][j] = 0
+            tableForAnalys[i][j] = 0
         end
     end
 end
@@ -147,6 +150,14 @@ local function resetTableOfAllPosibleMovementsForColor()
     for i = 1, N do
         for j = 1, N do
             tableOfAllPosibleMovementsForColor[i][j] = 0
+        end
+    end
+end
+
+local function resetTableForAnalys()
+    for i = 1, N do
+        for j = 1, N do
+            tableForAnalys[i][j] = 0
         end
     end
 end
@@ -369,7 +380,6 @@ local function fillArrayOfPosibleMoves(table,string,x,y)
     if string == "pawn" then
         arrayOfPosibleMovesPawn(table,x,y)
     end
-    highlightPossibleFigureMovements(x,y)
 end
 
 
@@ -441,20 +451,33 @@ local function isKingHasCheck(color)
     resetTableOfAllPosibleMovementsForColor()
 end
 
-local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd)
+local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     
     field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
     field[xStart][yStart]["piece"] = "null"
     field[xEnd][yEnd]["color"] = field[xStart][yStart]["color"]
     field[xStart][yStart]["color"] = "null"
-    print("done")
-    field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
-    field[xStart][yStart]["piece"] = "null"
-    field[xEnd][yEnd]["color"] = field[xStart][yStart]["color"]
-    field[xStart][yStart]["color"] = "null"
+    field[xEnd][yEnd]["object"] = field[xStart][yStart]["object"]
+    field[xStart][yStart]["object"] = "null"
+    --if isKingHasCheck("white") then
+    --    print ("yep")
+    --else   
+    --    print "nope"
+    --end
+    --if isKingHasCheck("black") then
+    --    print ("yep")
+    --else   
+    --    print "nope"
+    --end
+    field[xStart][yStart]["piece"] = field[xEnd][yEnd]["piece"]
+    field[xEnd][yEnd]["piece"] = "null"
+    field[xStart][yStart]["color"] = field[xEnd][yEnd]["color"]
+    field[xEnd][yEnd]["color"] = "null"
+    field[xStart][yStart]["object"] = field[xEnd][yEnd]["object"]
+    field[xEnd][yEnd]["object"] = "null"
 end
 
-local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY,an)
+local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY)
     event.target.x = DISTANCE_BETWEEN_SQUARES * xOfUnderneathSquare - DISTANCE_BETWEEN_SQUARES/2
     event.target.y = DISTANCE_BETWEEN_SQUARES * yOfUnderneathSquare - DISTANCE_BETWEEN_SQUARES/2 
     field[xOfUnderneathSquare][yOfUnderneathSquare]["piece"] = field[pieceStartCoordinateX][pieceStartCoordinateY]["piece"]
@@ -495,6 +518,19 @@ local function changePiecePositionIfValid(event,pieceStartPositionX,pieceStartPo
     end
 end
 
+local function excludeMovesWhereTheKingHasCheck(xStart,yStart,color)
+    -- для фигуры которую взял игрок фигуры своего цвета простчитать все ходы если есть чек то исключить
+    fillArrayOfPosibleMoves(tableForAnalys,field[xStart][yStart]["piece"],xStart,yStart)
+    for i = 1, N do
+        for j = 1, N do
+            if tableForAnalys[i][j] == 1 then
+                changePiecePositionForCheck(xStart,yStart,i,j,color)
+                print("can go to " .. i .. j)
+            end
+        end
+    end
+    resetTableForAnalys()
+end
 
 local  pieceStartPositionX, pieceStartPositionY
 local function onObjectTouch( event )
@@ -505,18 +541,17 @@ local function onObjectTouch( event )
         pieceStartPositionY = event.target.y  
         local startPositionCoordinateX = math.floor(pieceStartPositionX/35) + 1
         local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
-        isKingHasCheck("white")
-        isKingHasCheck("black")
-        if whiteKingHascheck == "true" then
-            print "check"
-        end
-        if blackKingHascheck == "true" then   
-            print "check"
-        end
-        if blackKingHascheck == "true" then
-           changePiecePositionForCheck(2,2,2,4)
-        end
-        fillArrayOfPosibleMoves(tableOfPosibleMovements,field[startPositionCoordinateX][startPositionCoordinateY]["piece"], startPositionCoordinateX,startPositionCoordinateY)
+        fillArrayOfPosibleMoves(tableOfPosibleMovements,field[startPositionCoordinateX][startPositionCoordinateY]["piece"],
+                                 startPositionCoordinateX,startPositionCoordinateY)
+        --if whiteKingHascheck == "true" then
+        --    excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"white")
+        --    print ("white check")
+        --end
+        --if blackKingHascheck == "true" then   
+        --    excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"black")
+        --    print ("black check")
+        --end 
+        highlightPossibleFigureMovements(startPositionCoordinateX,startPositionCoordinateY)
     elseif ( event.target.isFocus ) then
         if ( event.phase == "moved" ) then
             event.target.x = event.x - FIELD_OFFSET_X
@@ -532,6 +567,8 @@ local function onObjectTouch( event )
                 local startPositionCoordinateY = math.floor(event.target.y/DISTANCE_BETWEEN_SQUARES) + 1
                 field[startPositionCoordinateX][startPositionCoordinateY]["object"]:addEventListener( "touch", onObjectTouch ) 
             end
+            --isKingHasCheck("white")
+            --isKingHasCheck("black")
             resetArrayOfPosibleMovements()
             changeColorOfSquare()
             resetArrayOfPosibleMovements()
