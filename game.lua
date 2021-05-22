@@ -453,10 +453,13 @@ end
 
 local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     
+    local kpiece = field[xEnd][yEnd]["piece"]
     field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
     field[xStart][yStart]["piece"] = "null"
+    local kcolor = field[xEnd][yEnd]["color"]
     field[xEnd][yEnd]["color"] = field[xStart][yStart]["color"]
     field[xStart][yStart]["color"] = "null"
+    local kobject = field[xEnd][yEnd]["object"]
     field[xEnd][yEnd]["object"] = field[xStart][yStart]["object"]
     field[xStart][yStart]["object"] = "null"
     --if isKingHasCheck("white") then
@@ -470,11 +473,11 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     --    print "nope"
     --end
     field[xStart][yStart]["piece"] = field[xEnd][yEnd]["piece"]
-    field[xEnd][yEnd]["piece"] = "null"
+    field[xEnd][yEnd]["piece"] = kpiece
     field[xStart][yStart]["color"] = field[xEnd][yEnd]["color"]
-    field[xEnd][yEnd]["color"] = "null"
+    field[xEnd][yEnd]["color"] = kcolor
     field[xStart][yStart]["object"] = field[xEnd][yEnd]["object"]
-    field[xEnd][yEnd]["object"] = "null"
+    field[xEnd][yEnd]["object"] = kobject
 end
 
 local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY)
@@ -543,14 +546,15 @@ local function onObjectTouch( event )
         local startPositionCoordinateY = math.floor(pieceStartPositionY/35) + 1
         fillArrayOfPosibleMoves(tableOfPosibleMovements,field[startPositionCoordinateX][startPositionCoordinateY]["piece"],
                                  startPositionCoordinateX,startPositionCoordinateY)
+        
         --if whiteKingHascheck == "true" then
         --    excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"white")
         --    print ("white check")
         --end
-        --if blackKingHascheck == "true" then   
-        --    excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"black")
-        --    print ("black check")
-        --end 
+        if blackKingHascheck == "true" then   
+            excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"black")
+            print ("black check")
+        end 
         highlightPossibleFigureMovements(startPositionCoordinateX,startPositionCoordinateY)
     elseif ( event.target.isFocus ) then
         if ( event.phase == "moved" ) then
@@ -567,8 +571,8 @@ local function onObjectTouch( event )
                 local startPositionCoordinateY = math.floor(event.target.y/DISTANCE_BETWEEN_SQUARES) + 1
                 field[startPositionCoordinateX][startPositionCoordinateY]["object"]:addEventListener( "touch", onObjectTouch ) 
             end
-            --isKingHasCheck("white")
-            --isKingHasCheck("black")
+            isKingHasCheck("white")
+            isKingHasCheck("black")
             resetArrayOfPosibleMovements()
             changeColorOfSquare()
             resetArrayOfPosibleMovements()
