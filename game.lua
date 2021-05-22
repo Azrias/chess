@@ -448,7 +448,7 @@ local function isKingHasCheckForAnalys(color)
     end
     for i = 1, N do
         for j = 1, N do
-            if tableForAnalys[i][j] == 1 and field[i][j]["piece"] == "king" then
+            if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" then
                 if color == "white" then
                     whiteKingHascheckForAnalys = "true"
                 else
