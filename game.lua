@@ -45,6 +45,7 @@ local FIELD_OFFSET_Y = 50
 local tableOfPosibleMovements = {}
 local tableOfAllPosibleMovementsForColor = {}
 local tableForAnalys = {}
+local tableForallPosibleMovesForAnalys = {}
 local function createField()
     -- body
     for i=1,N do
@@ -52,6 +53,7 @@ local function createField()
         tableOfPosibleMovements[i] = {}
         tableOfAllPosibleMovementsForColor[i] = {}
         tableForAnalys[i] = {}   
+        tableForallPosibleMovesForAnalys[i] = {}  
         for j=1,N do
             local square = {}
             square["x"] = i * DISTANCE_BETWEEN_SQUARES - DISTANCE_BETWEEN_SQUARES/2
@@ -63,6 +65,7 @@ local function createField()
             tableOfPosibleMovements[i][j] = 0
             tableOfAllPosibleMovementsForColor[i][j] = 0
             tableForAnalys[i][j] = 0
+            tableForallPosibleMovesForAnalys[i][j] = 0
         end
     end
 end
@@ -161,6 +164,14 @@ local function resetTableForAnalys()
     for i = 1, N do
         for j = 1, N do
             tableForAnalys[i][j] = 0
+        end
+    end
+end
+
+local function resettableForallPosibleMovesForAnalys()
+    for i = 1, N do
+        for j = 1, N do
+            tableForallPosibleMovesForAnalys[i][j] = 0
         end
     end
 end
@@ -423,7 +434,7 @@ local function isNeedToPromote(string,y)
     return false
 end
 
-local function allPosiblemovesForColor(string)
+local function allPosiblemovesForColor(table,string)
     local color
     if string  == "white" then
         color = "black"
@@ -433,14 +444,14 @@ local function allPosiblemovesForColor(string)
     for i = 1, N do
         for j = 1, N do
             if field[i][j]["color"] == color and field[i][j]["piece"] ~= "null" then
-                fillArrayOfPosibleMoves(tableOfAllPosibleMovementsForColor,field[i][j]["piece"],i,j)
+                fillArrayOfPosibleMoves(table,field[i][j]["piece"],i,j)
             end
         end
     end
 end
 
 local function isKingHasCheckForAnalys(color)
-    allPosiblemovesForColor(color)
+    allPosiblemovesForColor(tableForallPosibleMovesForAnalys,color)
     if color == "white" then
         whiteKingHascheckForAnalys = "false"
     else
@@ -448,7 +459,7 @@ local function isKingHasCheckForAnalys(color)
     end
     for i = 1, N do
         for j = 1, N do
-            if tableOfAllPosibleMovementsForColor[i][j] == 1 and field[i][j]["piece"] == "king" then
+            if tableForallPosibleMovesForAnalys[i][j] == 1 and field[i][j]["piece"] == "king" then
                 if color == "white" then
                     whiteKingHascheckForAnalys = "true"
                 else
@@ -457,11 +468,11 @@ local function isKingHasCheckForAnalys(color)
             end
         end
     end
-    resetTableOfAllPosibleMovementsForColor()
+    resettableForallPosibleMovesForAnalys()
 end
 
 local function isKingHasCheck(color)
-    allPosiblemovesForColor(color)
+    allPosiblemovesForColor(tableOfAllPosibleMovementsForColor,color)
     if color == "white" then
         whiteKingHascheck = "false"
     else
