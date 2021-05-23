@@ -367,9 +367,6 @@ local function arrayOfPosibleMovesPawn(table,xStart,yStart)
     
 end
 
-local function deleteIlligalSquares(table)
-    
-end
 
 local function fillArrayOfPosibleMoves(table,string,x,y)
     if field[x][y]["color"] == currentTurnColor and  not ONE_PLAYER then
@@ -504,7 +501,7 @@ local function isKingHasCheck(color)
 end
 
 local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
-    
+    local isLegalMove = true
     local kpiece = field[xEnd][yEnd]["piece"]
     field[xEnd][yEnd]["piece"] = field[xStart][yStart]["piece"]
     field[xStart][yStart]["piece"] = "null"
@@ -514,15 +511,24 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     local kobject = field[xEnd][yEnd]["object"]
     field[xEnd][yEnd]["object"] = field[xStart][yStart]["object"]
     field[xStart][yStart]["object"] = "null"
-    print(xEnd .. " " .. yEnd)
+    --print(xEnd .. " " .. yEnd)
 
-    --isKingHasCheckForAnalys("white")
-    isKingHasCheckForAnalys("black")
-
-    if blackKingHascheckForAnalys == "true" then
-        print("has check if go to" .. xEnd .. yEnd)
+    if color == "black" then
+        isKingHasCheckForAnalys("black")
+        if blackKingHascheckForAnalys == "true" then
+            isLegalMove = false
+            --print("black king has check if go to" .. xEnd .. yEnd)
+        else
+            --print("black doesnot have one")
+        end
     else
-        print("doesnot have one")
+        isKingHasCheckForAnalys("white")
+        if whiteKingHascheckForAnalys == "true" then
+            isLegalMove = false
+            --print("white king has check if go to" .. xEnd .. yEnd)
+        else
+            --print("white doesnot have one")
+        end
     end
     field[xStart][yStart]["piece"] = field[xEnd][yEnd]["piece"]
     field[xEnd][yEnd]["piece"] = kpiece
@@ -530,6 +536,7 @@ local function changePiecePositionForCheck(xStart,yStart,xEnd,yEnd,color)
     field[xEnd][yEnd]["color"] = kcolor
     field[xStart][yStart]["object"] = field[xEnd][yEnd]["object"]
     field[xEnd][yEnd]["object"] = kobject
+    return isLegalMove
 end
 
 local function changePiecePosition(event,pieceStartCoordinateX,pieceStartCoordinateY)
@@ -578,8 +585,9 @@ local function excludeMovesWhereTheKingHasCheck(xStart,yStart,color)
     fillArrayOfPosibleMoves(tableForAnalys,field[xStart][yStart]["piece"],xStart,yStart)
     for i = 1, N do
         for j = 1, N do
-            if tableForAnalys[i][j] == 1 then
-                changePiecePositionForCheck(xStart,yStart,i,j,color)
+            if tableForAnalys[i][j] == 1  and not changePiecePositionForCheck(xStart,yStart,i,j,color) then
+                print(i .. j .. "illigal square")
+                tableOfPosibleMovements[i][j] = 0
             end
         end
     end
@@ -600,11 +608,9 @@ local function onObjectTouch( event )
         
         if whiteKingHascheck == "true" then
             excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"white")
-            print ("whiteking has check")
         end
         if blackKingHascheck == "true" then   
             excludeMovesWhereTheKingHasCheck(startPositionCoordinateX,startPositionCoordinateY,"black")
-            print ("blackking has check")
         end 
         highlightPossibleFigureMovements(startPositionCoordinateX,startPositionCoordinateY)
     elseif ( event.target.isFocus ) then
